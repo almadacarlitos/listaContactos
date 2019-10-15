@@ -1,6 +1,8 @@
 
 //Objeto de acceso a datos
  const persistence = new Persistence();
+ let esNuevo = true;
+ let indice = -1;
 
 /*/ MENU*/
 //selecciona el menu y agrega un evento click 
@@ -34,19 +36,47 @@ let persona = {
 
 };
 
-
-
-persistence.guardar( persona );
+if(esNuevo){
+	persistence.guardar( persona);
+}else {
+	persistence.modificar( persona, indice );
+}
 
 //Limpia el formulario
 $('#btnCancelar').click();
 
 //Carga de nuevo toda la tabla
-cargarTabla();
+cargaTabla();
 
 
 
 });
+
+$('#btnCancelar').click(function(event){
+	esNuevo = true;
+})
+
+
+function editar( btn ){
+	esNuevo = false;
+	 indice = $(btn).parent().parent().index();
+	let contacto = persistence.recuperarPorIndice( indice );
+
+		$("#nombre").val( contacto.nombre );
+		$("#telefono").val( contacto.telefono );
+		$("#email").val( contacto.email );
+		$("#direccion").val( contacto.direccion );
+
+
+	$("#reg").click();
+
+}
+
+function eliminar ( btn ){
+ indice = $( btn ).parent().parent().index();
+ persistence.eliminar( indice );
+ cargaTabla();
+}
 
 // TABlA
 
@@ -70,10 +100,10 @@ function cargaTabla(){
                     <td>${elem.email}</td>
                     <td>${elem.direccion}</td>
                     <td>
-                        <button onclick="" class="bnt btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Editar">
+                        <button onclick="editar(this)" class="bnt btn-outline-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button onclick="" class="bnt btn-outline-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                        <button onclick="eliminar(this)" class="bnt btn-outline-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Eliminar">
                             <i class="fas fa-eraser"></i>
                         </button>
                     </td>
